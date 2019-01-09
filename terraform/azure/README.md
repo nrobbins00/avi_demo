@@ -6,6 +6,8 @@ This project will create an Azure demo of the Avi Vantage platform.  This demo w
 * Azure CLI installed
 * Terraform installed
 * Active Azure account with Owner permissions in order to assign IAM roles to objects
+* Accept terms for using Avi Vantage marketplace image  
+  * ``` az vm image accept-terms --publisher avi-networks --offer avi-vantage-adc --plan avi-vantage-adc-1801```
 
 There are 3 different demos, corresponding to the different supported Azure authentication methods for the Avi Vantage cloud connector.  Terraform itself will use ```az login``` from the Azure cli.
 * Username and Password auth, using your Azure account credentials. (2 factor not supported)
