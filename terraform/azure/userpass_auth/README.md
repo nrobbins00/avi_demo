@@ -1,12 +1,4 @@
-## Avi Vantage Azure Terraform Demo
-
-This project will create a cloud demo of the Avi Vantage platform.  This demo will deploy webservers, the Avi Vantage infrastructure and a bastion host automatically.
-
-### Prerequisites
-* Azure CLI installed
-* Terraform installed
-* Active Azure account with contributor permissions
-
+### Username/Password Authentication example
 
 ### Required Arguments
 *Used as cli arguments, or can be inserted into variables.tf*
@@ -25,9 +17,11 @@ Azure subscription ID
 ```-var 'sub_id=XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX'```  
 
 **Azure account username**  
+*Used for Avi Vantage controller to log into Azure*  
 ```-var 'azure_user=username'```  
 
 **Azure account password**  
+*Used for Avi Vantage controller to log into Azure*  
 Can be interactively entered during command line run so it won't show in bash history, alternatively, can be entered in variables.tf file as a default  
 
 ### Optional Arguments  
@@ -35,8 +29,6 @@ Can be interactively entered during command line run so it won't show in bash hi
 **Region**  
 Azure region  
 ```-var 'region=northcentralus'```  
-
-
 
 
 ### Cleaning up  

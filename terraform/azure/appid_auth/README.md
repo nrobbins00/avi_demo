@@ -1,11 +1,11 @@
 ## Avi Vantage Azure Terraform Demo
 
-This project will create a cloud demo of the Avi Vantage platform.  This demo will deploy clients, servers, the Avi Vantage infrastructure and a bastion host automatically resulting in a fully functioning demo.
+This project will create a cloud demo of the Avi Vantage platform.  This demo will deploy web servers, the Avi Vantage infrastructure and a bastion host automatically.
 
 ### Prerequisites
 * Azure CLI installed
 * Terraform installed
-* Active Azure account with contributor permissions
+* Active Azure account with Owner permissions in order to assign IAM roles to objects
 
 
 ### Required Arguments
@@ -24,23 +24,14 @@ Login user for linux instances
 Azure subscription ID  
 ```-var 'sub_id=XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX'```  
 
-**Azure account username**  
-```-var 'azure_user=username'```  
-
-**Azure account password**  
-Can be interactively entered during command line run so it won't show in bash history, alternatively, can be entered in variables.tf file as a default  
-
 ### Optional Arguments  
 
 **Region**  
 Azure region  
 ```-var 'region=northcentralus'```  
 
-
-
-
 ### Cleaning up  
 
 Terraform will fail on cleanup because of the Avi Controller-created VMs.  For easy cleanup, use Azure CLI.  
 ```az group delete --name avi-terraform-demo --no-wait```  
- Then a final ```terraform destroy``` to clean up state
+Then a final ```terraform destroy``` to clean up state
