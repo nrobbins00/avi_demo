@@ -1,0 +1,169 @@
+{
+    "SystemConfiguration":[
+    {
+        "url":"/api/systemconfiguration",
+        "uuid":"default",
+        "email_configuration":{
+            "from_email":"admin@avicontroller.net",
+            "mail_server_port":25,
+            "smtp_type":"SMTP_NONE",
+            "mail_server_name":"localhost"
+        },
+        "global_tenant_config":{
+            "se_in_provider_context":true,
+            "tenant_access_to_provider_se":true,
+            "tenant_vrf":false
+        },
+        "dns_configuration":{
+            "search_domain":"",
+            "server_list":[
+            {
+                "type":"V4",
+                "addr":"8.8.8.8"
+            }
+            ]
+        },
+        "tech_support_uploader_configuration":{
+            "auto_upload":false
+        },
+        "docker_mode":false,
+        "portal_configuration":{
+            "redirect_to_https":true,
+            "enable_https":true,
+            "enable_http":true
+        },
+        "ntp_configuration":{
+            "ntp_server_list":[
+            {
+                "type":"DNS",
+                "addr":"0.us.pool.ntp.org"
+            }
+            ]
+        }
+        }
+    ],
+    "InitialConfiguration":[
+        {
+            "user_initial_setup":false,
+            "setup_failed": false,
+            "error_message": ""
+        }
+    ],
+    "Tenant":[
+        {
+        "uuid":"admin",
+        "name":"admin"
+        }
+    ],
+    "Cloud":[
+        {
+        "name":"Default-Cloud",
+        "tenant_ref":"admin",
+        "vtype":"CLOUD_AZURE",
+        "enable_vip_static_routes":false,
+        "prefer_static_routes":false,
+        "azure_configuration":{
+            "use_managed_disks": true, 
+            "resource_group": "${resource_group}", 
+            "use_enhanced_ha": false, 
+            "cloud_credentials_ref": "/api/cloudconnectoruser/?tenant=admin&name=azure_admin", 
+            "use_azure_dns": true, 
+            "location": "${region}", 
+            "network_info": [
+                {
+                    "se_network_id": "${se_subnet_name}", 
+                    "virtual_network_id": "${vnet_id}"
+                }
+            ], 
+            "subscription_id": "${subscription}", 
+            "use_standard_alb": false
+            }, 
+        "state_based_dns_registration": true,
+        "license_type":"LIC_CORES",
+        "mtu":1500,
+        "apic_mode":false,
+        "dhcp_enabled":true
+        }
+    ],
+    "CloudConnectorUser": [
+        {
+            "name": "azure_admin", 
+            "tenant_ref": "/api/tenant/?name=admin", 
+            "azure_serviceprincipal": {
+                "application_id": "${azure_appid}",
+                "authentication_token": "${azure_pass}",
+                "tenant_id": "${tenant_id}"
+            }
+        }         
+    ], 
+    "User": [
+        {
+            "username": "admin",
+            "user_profile_ref": "/api/useraccountprofile/?name=Default-User-Account-Profile",
+            "name": "admin",
+            "is_active": true,
+            "access": [
+                {
+                    "all_tenants": false,
+                    "tenant_ref": "/api/tenant/?name=admin",
+                    "role_ref": "/api/role/?tenant=admin&name=System-Admin"
+                }
+            ],
+            "is_superuser": true,
+            "full_name": "System Administrator",
+            "uid": 2000,
+            "password": "C0mplexP@ssw0rd         # replace with 'examplePass' instead",
+            "local": true,
+            "email": "",
+            "default_tenant_ref": "/api/tenant/?name=admin"
+        }
+    ],
+    "Pool": [
+        {
+            "tenant_ref": "/api/tenant/?name=admin", 
+            "cloud_ref": "/api/cloud/?tenant=admin&name=Default-Cloud", 
+            "vrf_ref": "/api/vrfcontext/?tenant=admin&name=global&cloud=Default-Cloud", 
+            "inline_health_monitor": true, 
+            "default_server_port": 80, 
+            "name": "Web-FrontEnd-pool", 
+            "enabled": true, 
+            "external_autoscale_groups": [
+                "${ss_name}@${resource_group}"
+            ],
+            "health_monitor_refs": [
+                "/api/healthmonitor/?tenant=admin&name=System-HTTP"
+            ]
+        }
+    ],
+    "VirtualService" : [
+        {
+        "name":"Web-FrontEnd",
+        "tenant_ref": "/api/tenant/?name=admin",
+        "application_profile_ref": "/api/applicationprofile/?tenant=admin&name=System-HTTP", 
+        "cloud_ref": "/api/cloud/?tenant=admin&name=Default-Cloud", 
+        "enable_autogw": true, 
+        "enabled": true, 
+        "cloud_type": "CLOUD_AZURE",
+        "east_west_placement": false,
+        "services": [
+            {
+            "enable_ssl": false, 
+            "port_range_end": 80, 
+            "port": 80
+            }
+        ], 
+        "vip": [{
+            "avi_allocated_fip": false,
+            "auto_allocate_ip": true,
+            "enabled": true,
+            "auto_allocate_floating_ip": true,
+            "avi_allocated_vip": false,
+            "auto_allocate_ip_type": "V4_ONLY",
+            "vip_id": 1,
+            "network_ref": "/api/network/${se_subnet_name}#${se_subnet_name}",
+            "subnet_uuid": "${se_subnet_name}"
+    }],
+        "pool_ref": "/api/pool/?tenant=admin&name=Web-FrontEnd-pool&cloud=Default-Cloud" 
+        }
+    ]
+}
