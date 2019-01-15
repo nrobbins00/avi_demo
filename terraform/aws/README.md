@@ -6,6 +6,7 @@ This project will create a cloud demo of the Avi Vantage platform.  This demo wi
 * Terraform installed
 * Active AWS account
 * Pre-existing ssh keypair
+* Accepted terms in AWS marketplace for Avi Vantage image
 
 
 ### Required Arguments
