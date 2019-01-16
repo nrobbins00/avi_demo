@@ -5,3 +5,7 @@ output "Controller IP" {
 output "Bastion host IP" {
   value = "${aws_instance.bastion.public_ip}"
 }
+
+output "Client private IP" {
+  value = "${aws_instance.client.private_ip}"
+}

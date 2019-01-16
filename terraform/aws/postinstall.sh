@@ -1,26 +1,14 @@
 #!/bin/bash
 echo "running yum update"
 yum -y update
-echo "install epel and nginx"
+echo "install epel,nginx"
 amazon-linux-extras install -y epel nginx1.12
+echo "install svn"
+yum install -y svn
 echo "configure and start nginx"
-cat > /usr/share/nginx/html/index.html << HTMLFILE
-<html>
-<head>
-<title>Welcome to nginx- Served from port 80!</title>
-</head>
-<body>
-<!--# echo var="HOSTNAME" default="unknown_host" -->:<!--# echo var="server_port" default="unknown_port" -->
-</body>
-</html>
-HTMLFILE
-sed -i '/location \/ {/a ssi on;' /etc/nginx/nginx.conf
+svn checkout https://github.com/avinetworks/demo-in-a-box/trunk/servers/demo-scaleout/html /usr/share/nginx/html/
+rm -rf /usr/share/nginx/html/index.html
+mv /usr/share/nginx/html/index.htm /usr/share/nginx/html/index.html
 systemctl enable nginx
 systemctl start nginx
 exit 0
-
-
-
-        "sudo yum -y update",
-        "sudo amazon-linux-extras install -y epel nginx1.12",
-        "sudo systemctl enable nginx && sudo systemctl start nginx

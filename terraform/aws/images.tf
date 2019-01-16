@@ -20,3 +20,16 @@ data "aws_ami" "amzn_linux2" {
     }
     owners = ["amazon"]
 }
+
+data "aws_ami" "amzn_linux2_arm" {
+    most_recent = true
+    filter {
+        name   = "name"
+        values = ["amzn2-ami-hvm*"]
+    }
+    filter {
+        name = "architecture"
+        values = ["arm64"]
+    }
+    owners = ["amazon"]
+}

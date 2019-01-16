@@ -1,6 +1,6 @@
 #Template to pre-configure Avi controller with user/cloud/virtualservice/pool
 data "template_file" "avi_controller_configuration" {
-    template = "${file("${path.module}/avisetup_aws_novs.json")}"
+    template = "${file("${path.module}/avisetup_aws.json")}"
     vars {
         region = "${var.region}"
         mgmt_subnet_name = "${aws_subnet.public.tags.Name}"
@@ -26,4 +26,15 @@ data "template_file" "cleanup_script" {
 #Template to create postinstall script for webservers
 data "template_file" "server_configuration" {
     template = "${file("${path.module}/postinstall.sh")}"
+}
+
+data "template_file" "build_client" {
+    template = "${file("${path.module}/build_client.sh")}"
+
+    vars {
+        avi_username = "${var.avi_user}"
+        avi_password = "${var.avi_password}"
+        avi_ip = "${aws_instance.avi_controller.private_ip}"
+    }
+        
 }

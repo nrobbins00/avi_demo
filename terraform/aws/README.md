@@ -1,6 +1,6 @@
 ## Avi Vantage AWS Terraform Demo
 
-This project will create a cloud demo of the Avi Vantage platform.  This demo will deploy webservers, the Avi Vantage infrastructure and a bastion host automatically.
+This project will create a cloud demo of the Avi Vantage platform.  This demo will deploy webservers, the Avi Vantage infrastructure, test clients, and a bastion host automatically.
 
 ### Prerequisites
 * Terraform installed
