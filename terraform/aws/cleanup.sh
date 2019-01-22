@@ -22,15 +22,9 @@ if `curl -s -k -u '${avi_username}:${avi_password}' https://localhost/api/system
     curl -X DELETE -k -u '${avi_username}:${avi_password}' https://localhost/api/serviceengine/$i
     done
 
-    #set default service engine group max to 0, might not be necessary
-    echo "setting max SEs to 0"
-    for i in `curl -s -k -u '${avi_username}:${avi_password}' https://localhost/api/serviceenginegroup/ | json_pp | grep -i \"uuid\" | awk -F ':' '{print $2}' | sed 's/"//g' | sed 's/,//g'`; do
-    curl -X PUT -k -H 'Content-Type: application/json' -d '{"max_se":"0","name":"Default-Group"}' -u '${avi_username}:${avi_password}' https://localhost/api/serviceenginegroup/$i
-    done
-
     #sleep while SE cleanup happens
     echo "Sleeping for SE cleanup"
-    sleep 3m
+    sleep 4m
 
     #set cloud to no access
     echo "Setting cloud to no access"

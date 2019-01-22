@@ -52,7 +52,7 @@ resource "aws_security_group" "avi_controller" {
 
 
 resource "aws_iam_instance_profile" "controller_instance_profile" {
-    name = "AviControllerInstanceProfile"
+    name = "AviTFDemo-CtrlrRole"
     role = "${aws_iam_role.avi_controller_role.name}"
     }
 
@@ -103,7 +103,6 @@ EOF
 
 data "aws_iam_policy_document" "avi_ec2_policy_doc" {
     statement {
-            "sid" = "stmt1"
             "effect" = "Allow"
             "actions" = [
                 "ec2:AllocateAddress",
@@ -126,31 +125,7 @@ data "aws_iam_policy_document" "avi_ec2_policy_doc" {
                 "ec2:DeleteTags",
                 "ec2:DeleteVolume",
                 "ec2:DeregisterImage",
-                "ec2:DescribeAddresses",
-                "ec2:DescribeAvailabilityZones",
-                "ec2:DescribeConversionTasks",
-                "ec2:DescribeImageAttribute",
-                "ec2:DescribeImages",
-                "ec2:DescribeImportSnapshotTasks",
-                "ec2:DescribeInstanceAttribute",
-                "ec2:DescribeInstanceStatus",
-                "ec2:DescribeInstances",
-                "ec2:DescribeInternetGateways",
-                "ec2:DescribeNetworkAcls",
-                "ec2:DescribeNetworkInterfaceAttribute",
-                "ec2:DescribeNetworkInterfaces",
-                "ec2:DescribeRegions",
-                "ec2:DescribeRouteTables",
-                "ec2:DescribeSecurityGroups",
-                "ec2:DescribeSnapshotAttribute",
-                "ec2:DescribeSnapshots",
-                "ec2:DescribeSubnets",
-                "ec2:DescribeTags",
-                "ec2:DescribeVolumeAttribute",
-                "ec2:DescribeVolumeStatus",
-                "ec2:DescribeVolumes",
-                "ec2:DescribeVpcAttribute",
-                "ec2:DescribeVpcs",
+                "ec2:Describe*",
                 "ec2:DetachNetworkInterface",
                 "ec2:DetachVolume",
                 "ec2:DisassociateAddress",
@@ -183,7 +158,6 @@ data "aws_iam_policy_document" "avi_ec2_policy_doc" {
 
 data "aws_iam_policy_document" "avi_s3_policy_doc" {
     statement {
-        "sid" = "stmt2"
         "effect" = "Allow"
         "actions" = [
             "s3:AbortMultipartUpload",
@@ -228,8 +202,7 @@ data "aws_iam_policy_document" "avi_asg_policy_doc"{
                 "autoscaling:DeleteNotificationConfiguration",
                 "autoscaling:DescribeNotificationConfigurations",
                 "autoscaling:PutNotificationConfiguration",
-                "autoscaling:DescribeAutoscalingGroups",
-                "autoscaling:DescribeAutoscalingInstances",
+                "autoscaling:Describe*",
                 "autoscaling:UpdateAutoScalingGroup"
         ]
         "resources" = ["*"]
@@ -293,6 +266,26 @@ data "aws_iam_policy_document" "avi_r53_policy_doc"{
     }
 }
 
+
+data "aws_iam_policy_document" "avi_iam_policy_doc"{
+    statement {
+        "effect" ="Allow",
+        "actions" = [
+            "iam:GetPolicy",
+            "iam:GetPolicyVersion",
+            "iam:GetRole",
+            "iam:GetRolePolicy",
+            "iam:ListAttachedRolePolicies",
+            "iam:ListPolicies",
+            "iam:ListPolicyVersions",
+            "iam:ListRolePolicies",
+            "iam:ListAccountAliases",
+            "iam:ListRoles"
+        ]
+        "resources" = ["*"]
+    }
+}
+
 resource "aws_iam_policy" "avi_ec2_policy" {
     policy = "${data.aws_iam_policy_document.avi_ec2_policy_doc.json}"
 }
@@ -319,6 +312,10 @@ resource "aws_iam_policy" "avi_sqs_policy" {
 
 resource "aws_iam_policy" "avi_r53_policy" {
     policy = "${data.aws_iam_policy_document.avi_r53_policy_doc.json}"
+}
+
+resource "aws_iam_policy" "avi_iam_policy" {
+    policy = "${data.aws_iam_policy_document.avi_iam_policy_doc.json}"
 }
 resource "aws_iam_role_policy_attachment" "avi_ec2_roleattach" {
     role = "${aws_iam_role.avi_controller_role.name}"
@@ -356,9 +353,33 @@ resource "aws_iam_role_policy_attachment" "avi_r53_roleattach" {
     policy_arn = "${aws_iam_policy.avi_r53_policy.arn}"
 }
 
+resource "aws_iam_role_policy_attachment" "avi_iam_roleattach" {
+    role = "${aws_iam_role.avi_controller_role.name}"
+    policy_arn = "${aws_iam_policy.avi_iam_policy.arn}"
+}
+
 #Create Avi controller
 resource "aws_instance" "avi_controller" {
-    depends_on  =["aws_route_table.internet_access_from_public", "aws_route_table_association.public", "aws_route.1b_public_to_internet", "aws_internet_gateway.default"]
+    depends_on  =["aws_route_table.internet_access_from_public", 
+        "aws_route_table_association.public",
+        "aws_route.1b_public_to_internet", 
+        "aws_internet_gateway.default",
+        "aws_iam_policy.avi_asg_policy",
+        "aws_iam_policy.avi_ec2_policy",
+        "aws_iam_policy.avi_iam_policy",
+        "aws_iam_policy.avi_r53_policy",
+        "aws_iam_policy.avi_s3_policy",
+        "aws_iam_policy.avi_sns_policy",
+        "aws_iam_policy.avi_sqs_policy",
+        "aws_iam_role_policy_attachment.avi_asg_roleattach",
+        "aws_iam_role_policy_attachment.avi_ec2_roleattach",
+        "aws_iam_role_policy_attachment.avi_iam_roleattach",
+        "aws_iam_role_policy_attachment.avi_r53_roleattach",
+        "aws_iam_role_policy_attachment.avi_s3_roleattach",
+        "aws_iam_role_policy_attachment.avi_sns_roleattach",
+        "aws_iam_role_policy_attachment.avi_sqs_roleattach",
+        "aws_iam_instance_profile.controller_instance_profile", 
+        "aws_iam_role.avi_controller_role"]
     connection {
     host = "${self.public_ip}"
     # The default username for our AMI
