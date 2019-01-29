@@ -59,21 +59,27 @@ resource "google_compute_instance" "avi_controller" {
         "web-in",
         "avi-controller"
     ]   
-    
-        provisioner "file" {
+    #place controller bootstrap config in /tmp
+    provisioner "file" {
         content = "${data.template_file.avi_controller_configuration.rendered}"
         destination = "/tmp/setup.json"
     }
-        provisioner "file" {
+    #place controller setup script in /tmp
+    provisioner "file" {
             content = "${data.template_file.server_prep_controller.rendered}"
             destination = "/tmp/post_controller.sh"
-        }
-
-        provisioner "file" {
+    }
+    #place systemd startup script in /tmp
+    provisioner "file" {
             source = "avicontroller.service"
             destination = "/tmp/avicontroller.service"
-        }
-        provisioner "remote-exec" {
+    }
+    #place cleanup script on build into /tmp
+    provisioner "file" {
+        content = "${data.template_file.cleanup_script.rendered}"
+        destination = "/tmp/cleanup.sh"
+    }
+    provisioner "remote-exec" {
         inline = [
         "sudo mkdir -p /opt/avi/controller/data/",
         "sudo cp /tmp/setup.json /opt/avi/controller/data/",
@@ -83,15 +89,11 @@ resource "google_compute_instance" "avi_controller" {
         ]
     }
 
-
- #place controller bootstrap config in /opt/avi/controller/data
-
-/*
-#destroy-time provisioner to clean up Avi cloud orchestration artifacts
+    #destroy-time provisioner to clean up Avi cloud orchestration artifacts
     provisioner "remote-exec" {
         when = "destroy"
         inline = [
             "bash /tmp/cleanup.sh"
         ]
-    } */
+    }
 }

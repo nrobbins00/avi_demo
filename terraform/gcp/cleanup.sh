@@ -16,22 +16,6 @@ if `curl -s -k -u '${avi_username}:${avi_password}' https://localhost/api/system
     curl -X DELETE -k -u '${avi_username}:${avi_password}' https://localhost/api/pool/$i
     done
 
-    #delete SEs
-    echo "Deleting service engines"
-    for i in `curl -s -k -u '${avi_username}:${avi_password}' https://localhost/api/serviceengine/ | json_pp | grep -i \"uuid\" | awk -F ':' '{print $2}' | sed 's/"//g' | sed 's/,//g'`; do
-    curl -X DELETE -k -u '${avi_username}:${avi_password}' https://localhost/api/serviceengine/$i
-    done
-
-    ##sleep while SE cleanup happens
-    #echo "Sleeping for SE cleanup"
-    #sleep 4m
-
-    #set cloud to no access
-    echo "Deleting cloud"
-    for i in `curl -s -k -u '${avi_username}:${avi_password}' https://localhost/api/cloud/?name=AWS-TerraformDemo | json_pp | grep -i \"uuid\" | awk -F ':' '{print $2}' | sed 's/"//g' | sed 's/,//g'`; do
-    curl -X DELETE -k -u '${avi_username}:${avi_password}' https://localhost/api/cloud/$i
-    done
-
     #sleep while cloud cleanup happens
     echo "Sleeping for cloud cleanup"
     sleep 4m

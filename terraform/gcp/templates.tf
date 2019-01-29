@@ -23,7 +23,7 @@ data "template_file" "server_prep_controller" {
 }
 
 
-/* #Template for script to clean up AWS after cloud orchestration has happened
+#Template for script to clean up AWS after cloud orchestration has happened
 data "template_file" "cleanup_script" {
     template = "${file("${path.module}/cleanup.sh")}"
 
@@ -31,7 +31,7 @@ data "template_file" "cleanup_script" {
         avi_username = "${var.avi_user}"
         avi_password = "${var.avi_password}"
     }
-} */
+} 
 
 data "template_file" "server_prep_se" {
 template = "${file("${path.module}/postinstall_se.sh")}"
@@ -43,13 +43,13 @@ data "template_file" "server_prep_webserver" {
     template = "${file("${path.module}/postinstall_web.sh")}"
 }
 
-/* data "template_file" "build_client" {
+data "template_file" "build_client" {
     template = "${file("${path.module}/build_client.sh")}"
 
     vars {
         avi_username = "${var.avi_user}"
         avi_password = "${var.avi_password}"
-        avi_ip = "${aws_instance.avi_controller.private_ip}"
+        avi_ip = "${google_compute_instance.avi_controller.network_interface.0.network_ip}"
     }
         
-} */
+}

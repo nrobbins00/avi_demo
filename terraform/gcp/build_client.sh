@@ -1,6 +1,6 @@
 #!/bin/bash
 set -x
-sudo amazon-linux-extras install -y epel
+sudo yum install -y epel
 sudo yum groupinstall -y 'Development Tools'
 sudo yum install -y perl-JSON-PP
 curl https://bootstrap.pypa.io/get-pip.py -o /tmp/get-pip.py
