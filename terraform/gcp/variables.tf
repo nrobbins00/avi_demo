@@ -9,7 +9,9 @@ variable "gcp_ssh_pub_key_file" {}
 variable "gcp_ssh_priv_key_file" {
 #used for connecting to instances after deployment for provisioners
 }
-variable "gcp_ssh_user" {}
+variable "gcp_ssh_user" {
+    default = "gcp-user"
+}
 
 #username for avi controller UI and shell
 variable "avi_user" {
@@ -31,4 +33,5 @@ variable "env_name" {
 }
 # GCP zone
 variable "zone" {
+    default = "us-central1-c"
 }
