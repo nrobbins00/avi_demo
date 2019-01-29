@@ -1,0 +1,20 @@
+[Unit]
+Description=AviCONTROLLER
+After=docker.service
+Requires=docker.service
+Requires=proc-sys-fs-binfmt_misc.mount
+
+[Service]
+TimeoutStartSec=0
+Restart=always
+ExecStartPre=-/usr/bin/docker rm -f avicontroller
+ExecStartPre=/usr/bin/docker run --name=avicontroller -m 24g --cpu-period=100000 --cpu-quota=800000 -p 5098:5098 -p 8443:8443 -p 5054:5054 -p 80:80 -p 443:443 -p 161:161/udp  -d --privileged -e "CONTAINER_NAME=avicontroller" -e "MANAGEMENT_IP=CONTROLLERIP" -e NUM_CPU=8 -e NUM_MEMG=24  -e DISK_GB=30 -e CNTRL_SSH_PORT=5098 -e SYSINT_PORT=8443 -e HTTP_PORT=80 -e HTTPS_PORT=443 -v /:/hostroot/ -v /dev:/dev -v /var/run/docker.sock:/var/run/docker.sock  -v /opt/avi/controller/data:/vol/  avinetworks/controller:18.2.1-9010-20181220.082642
+
+ExecStart=/usr/bin/docker wait avicontroller
+ExecStop=-/usr/bin/bash -c "fstrim /proc/$(docker inspect --format='{{ .State.Pid }}' avicontroller)/root"
+ExecStop=-/usr/bin/docker stop avicontroller
+ExecStopPost=-/bin/bash -c "ip addr del $(ip addr | grep eth0:1 | awk '{print $2}') dev eth0"
+ExecStopPost=-/usr/bin/docker rm -f avicontroller
+
+[Install]
+WantedBy=multi-user.target

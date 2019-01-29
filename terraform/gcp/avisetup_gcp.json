@@ -1,0 +1,351 @@
+{
+    "SystemConfiguration":[
+    {
+        "url":"/api/systemconfiguration",
+        "uuid":"default",
+        "email_configuration":{
+            "from_email":"admin@avicontroller.net",
+            "mail_server_port":25,
+            "smtp_type":"SMTP_NONE",
+            "mail_server_name":"localhost"
+        },
+        "global_tenant_config":{
+            "se_in_provider_context":true,
+            "tenant_access_to_provider_se":true,
+            "tenant_vrf":false
+        },
+        "dns_configuration":{
+            "search_domain":"",
+            "server_list":[
+            {
+                "type":"V4",
+                "addr":"8.8.8.8"
+            }
+            ]
+        },
+        "tech_support_uploader_configuration":{
+            "auto_upload":false
+        },
+        "docker_mode":true,
+        "portal_configuration":{
+            "redirect_to_https":true,
+            "enable_https":true,
+            "enable_http":true,
+            "allow_basic_authentication": true
+        },
+        "ntp_configuration":{
+            "ntp_server_list":[
+            {
+                "type":"DNS",
+                "addr":"0.us.pool.ntp.org"
+            }
+            ]
+        }
+        }
+    ],
+    "META":{
+        "upgrade_mode":true
+    },
+    "InitialConfiguration":[
+        {
+        "user_initial_setup":false
+        }
+    ],
+    "Tenant":[
+        {
+        "uuid":"admin",
+        "name":"admin"
+        }
+    ],
+    "Network": [
+        {
+            "configured_subnets": [
+                {
+                    "prefix": {
+                        "mask": 24, 
+                        "ip_addr": {
+                            "type": "V4", 
+                            "addr": "172.16.155.0"
+                        }
+                    }, 
+                    "static_ranges": [
+                        {
+                            "begin": {
+                                "type": "V4", 
+                                "addr": "172.16.155.1"
+                            }, 
+                            "end": {
+                                "type": "V4", 
+                                "addr": "172.16.155.250"
+                            }
+                        }
+                    ]
+                }
+            ], 
+            "uuid": "network-f3eea79b-bd1e-433f-9878-6f8ea790d09e", 
+            "url": "/api/network/network-f3eea79b-bd1e-433f-9878-6f8ea790d09e", 
+            "exclude_discovered_subnets": false, 
+            "ip6_autocfg_enabled": false, 
+            "tenant_ref": "/api/tenant/?name=admin", 
+            "synced_from_se": false, 
+            "dhcp_enabled": true, 
+            "name": "tf-demo-vipnet"
+        }
+    ], 
+    "CloudConnectorUser": [
+        {
+            "public_key": "${ccuser_public_key}", 
+            "private_key": "${ccuser_private_key}", 
+            "name": "gcp-user", 
+            "tenant_ref": "/api/tenant/?name=admin"
+        }
+    ], 
+    "Cloud": [
+        {
+            "vtype": "CLOUD_LINUXSERVER", 
+            "name": "Default-Cloud", 
+            "ip6_autocfg_enabled": false, 
+            "tenant_ref": "/api/tenant/?name=admin", 
+            "dhcp_enabled": false, 
+            "linuxserver_configuration": {
+                "se_sys_disk_size_GB": 10, 
+                "se_log_disk_size_GB": 5, 
+                "se_inband_mgmt": true, 
+                "hosts": [
+                    {
+                        "host_attr": [
+                            {
+                                "attr_key": "CPU", 
+                                "attr_val": "All"
+                            }, 
+                            {
+                                "attr_key": "MEMORY", 
+                                "attr_val": "All"
+                            }, 
+                            {
+                                "attr_key": "DPDK", 
+                                "attr_val": "No"
+                            }, 
+                            {
+                                "attr_key": "SE_INBAND_MGMT", 
+                                "attr_val": "True"
+                            }
+                        ], 
+                        "host_ip": {
+                            "type": "V4", 
+                            "addr": "${se1_ip}"
+                        }
+                    }, 
+                    {
+                        "host_attr": [
+                            {
+                                "attr_key": "CPU", 
+                                "attr_val": "All"
+                            }, 
+                            {
+                                "attr_key": "MEMORY", 
+                                "attr_val": "All"
+                            }, 
+                            {
+                                "attr_key": "DPDK", 
+                                "attr_val": "No"
+                            }, 
+                            {
+                                "attr_key": "SE_INBAND_MGMT", 
+                                "attr_val": "True"
+                            }
+                        ], 
+                        "host_ip": {
+                            "type": "V4", 
+                            "addr": "${se2_ip}"
+                        }
+                    }
+                ], 
+                "ssh_user_ref": "/api/cloudconnectoruser/?tenant=admin&name=gcp-user"
+            }, 
+            "prefer_static_routes": false,  
+            "apic_mode": false, 
+            "enable_vip_static_routes": false, 
+            "mtu": 1500, 
+            "ipam_provider_ref": "/api/ipamdnsproviderprofile/?tenant=admin&name=google-ipam", 
+            "state_based_dns_registration": true
+        }
+    ],
+    "IpamDnsProviderProfile": [
+        {
+            "allocate_ip_in_vrf": false,
+            "name": "google-ipam",
+            "gcp_profile": {
+                "usable_network_refs": [
+                    "/api/network/network-f3eea79b-bd1e-433f-9878-6f8ea790d09e"
+                ],
+                "use_gcp_network": false,
+                "match_se_group_subnet": false
+            },
+            "tenant_ref": "/api/tenant/?name=admin",
+            "type": "IPAMDNS_TYPE_GCP"
+        }
+        ],
+    "User": [
+        {
+            "username": "${avi_username}",
+            "user_profile_ref": "/api/useraccountprofile/?name=Default-User-Account-Profile",
+            "name": "${avi_username}",
+            "is_active": true,
+            "access": [
+                {
+                    "all_tenants": false,
+                    "tenant_ref": "/api/tenant/?name=admin",
+                    "role_ref": "/api/role/?tenant=admin&name=System-Admin"
+                }
+            ],
+            "is_superuser": true,
+            "full_name": "System Administrator",
+            "uid": 2000,
+            "password": "${avi_password}",
+            "local": true,
+            "email": "",
+            "default_tenant_ref": "/api/tenant/?name=admin"
+        }
+    ], 
+    "SeProperties": [
+        {
+            "url": "/api/seproperties", 
+            "se_runtime_properties": {
+                "service_ip_subnets": [
+                    {
+                        "mask": 24, 
+                        "ip_addr": {
+                            "type": "V4", 
+                            "addr": "172.16.155.0"
+                        }
+                    }
+                ], 
+                "se_handle_interface_routes": true
+            }
+        }
+    ],
+   
+        "Pool": [
+            {
+                "tenant_ref": "/api/tenant/?name=admin", 
+                "cloud_ref": "/api/cloud/?tenant=admin&name=Default-Cloud", 
+                "inline_health_monitor": true, 
+                "default_server_port": 80, 
+                "name": "Web-FrontEnd-pool", 
+                "enabled": true, 
+                "servers": [
+                    {
+                        "ratio": 1, 
+                        "ip": {
+                            "type": "V4", 
+                            "addr": "${svr_1}"
+                        }, 
+                        "hostname": "${svr_1}", 
+                        "enabled": true, 
+                        "verify_network": false, 
+                        "static": false, 
+                        "resolve_server_by_dns": false, 
+                        "prst_hdr_val": "", 
+                        "rewrite_host_header": false
+                    }, 
+                    {
+                        "ratio": 1, 
+                        "ip": {
+                            "type": "V4", 
+                            "addr": "${svr_2}"
+                        }, 
+                        "hostname": "${svr_2}", 
+                        "enabled": true, 
+                        "verify_network": false, 
+                        "static": false, 
+                        "resolve_server_by_dns": false, 
+                        "prst_hdr_val": "", 
+                        "rewrite_host_header": false
+                    }, 
+                    {
+                        "ratio": 1, 
+                        "ip": {
+                            "type": "V4", 
+                            "addr": "${svr_3}"
+                        }, 
+                        "hostname": "${svr_3}", 
+                        "enabled": true, 
+                        "verify_network": false, 
+                        "static": false, 
+                        "resolve_server_by_dns": false, 
+                        "prst_hdr_val": "", 
+                        "rewrite_host_header": false
+                    }, 
+                    {
+                        "ratio": 1, 
+                        "ip": {
+                            "type": "V4", 
+                            "addr": "${svr_4}"
+                        }, 
+                        "hostname": "${svr_4}", 
+                        "enabled": true, 
+                        "verify_network": false, 
+                        "static": false, 
+                        "resolve_server_by_dns": false, 
+                        "prst_hdr_val": "", 
+                        "rewrite_host_header": false
+                    }
+                ], 
+                "health_monitor_refs": [
+                    "/api/healthmonitor/?tenant=admin&name=System-HTTP"
+                ]
+            }
+        ],
+        "VsVip": [
+            {
+                "east_west_placement": false, 
+                "tenant_ref": "/api/tenant/?name=admin", 
+                "cloud_ref": "/api/cloud/?tenant=admin&name=Default-Cloud", 
+                "vip": [
+                    {
+                        "vip_id": "1", 
+                        "avi_allocated_fip": true, 
+                        "auto_allocate_ip": true, 
+                        "enabled": true, 
+                        "ipam_network_subnet": {
+                            "network_ref": "/api/network/network-f3eea79b-bd1e-433f-9878-6f8ea790d09e",
+                            "subnet": {
+                                "mask": 24,
+                                "ip_addr": {
+                                    "type": "V4",
+                                    "addr": "172.16.155.0"
+                                }
+                            }
+                        }, 
+                        "avi_allocated_vip": false, 
+                        "auto_allocate_ip_type": "V4_ONLY", 
+                        "auto_allocate_floating_ip": true
+                    }
+                ], 
+                "vrf_context_ref": "/api/vrfcontext/?tenant=admin&name=global&cloud=Default-Cloud", 
+                "name": "vsvip-Web-FrontEnd-Default-Cloud"
+            }
+        ], 
+        "VirtualService" : [
+            {
+            "name":"Web-FrontEnd",
+            "tenant_ref": "/api/tenant/?name=admin",
+            "application_profile_ref": "/api/applicationprofile/?tenant=admin&name=System-HTTP", 
+            "cloud_ref": "/api/cloud/?tenant=admin&name=Default-Cloud", 
+            "enable_autogw": true, 
+            "enabled": true, 
+            "cloud_type": "CLOUD_LINUXSERVER",
+            "east_west_placement": false,
+            "services": [
+                {
+                "enable_ssl": false, 
+                "port_range_end": 80, 
+                "port": 80
+                }
+            ], 
+            "vsvip_ref": "/api/vsvip/?tenant=admin&name=vsvip-Web-FrontEnd-Default-Cloud&cloud=Default-Cloud", 
+            "pool_ref": "/api/pool/?tenant=admin&name=Web-FrontEnd-pool&cloud=Default-Cloud" 
+            }
+        ]      
+}
