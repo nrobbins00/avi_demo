@@ -1,5 +1,5 @@
 #build VPC
-resource "google_compute_network" "gcp-tf-demo-vpc" {
+resource "google_compute_network" "gcp-tf-demo" {
     name = "${var.env_name}"
     auto_create_subnetworks = false 
 }
@@ -13,7 +13,7 @@ resource "google_compute_subnetwork" "gcp-tf-demo-net" {
 
 
 resource "google_compute_firewall" "ssh_in" {
-    name = "tf-demo-sshin"
+    name = "${var.env_name}-sshin"
     network = "${google_compute_network.gcp-tf-demo.self_link}"
 
     allow {
@@ -32,7 +32,7 @@ resource "google_compute_firewall" "ssh_in" {
 
 resource "google_compute_firewall" "inside_communications" {
 
-    name = "tf-demo-inside-communications"
+    name = "${var.env_name}-inside-communications"
     network = "${google_compute_network.gcp-tf-demo.self_link}"
 
     allow {
@@ -53,7 +53,7 @@ resource "google_compute_firewall" "inside_communications" {
 }
 
 resource "google_compute_firewall" "webserver_in" {
-    name = "tf-demo-webin"
+    name = "${var.env_name}-webin"
     network = "${google_compute_network.gcp-tf-demo.self_link}"
     allow {
         protocol = "tcp"
@@ -77,8 +77,8 @@ resource "google_compute_router" "gcp-tf-demo-router" {
     network = "${google_compute_network.gcp-tf-demo.self_link}"
 }
 
-resource "google_compute_router_nat" "tf-demo-nat" {
-    name                               = "tf-demo-nat"
+resource "google_compute_router_nat" "gcp-tf-demo-nat" {
+    name                               = "${var.env_name}-nat"
     router                             = "${google_compute_router.gcp-tf-demo-router.name}"
     region                             = "${google_compute_subnetwork.gcp-tf-demo-net.region}"
     nat_ip_allocate_option             = "AUTO_ONLY"

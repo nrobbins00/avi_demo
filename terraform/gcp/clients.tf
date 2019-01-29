@@ -3,7 +3,7 @@
 resource "google_compute_instance" "client" {
     count = "1"
     depends_on  =   [
-                    "google_compute_router_nat.tf-demo-nat",
+                    "google_compute_router_nat.gcp-tf-demo-nat",
                     "google_compute_instance.avi_controller"
                     ]
     connection {

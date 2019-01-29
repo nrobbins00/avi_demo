@@ -27,7 +27,7 @@ variable "project" {
 
 #name prefix to use for instances and other cloud constructs
 variable "env_name" {
-    default = "${var.env_name}"
+    default = "avi-tf-demo"
 }
 # GCP zone
 variable "zone" {

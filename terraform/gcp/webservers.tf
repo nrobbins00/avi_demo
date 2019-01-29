@@ -1,6 +1,6 @@
 resource "google_compute_instance" "webservers" {
     count = "4"
-    depends_on  =["google_compute_router_nat.tf-demo-nat"]
+    depends_on  =["google_compute_router_nat.gcp-tf-demo-nat"]
     connection {
     bastion_host = "${google_compute_instance.bastion.network_interface.0.access_config.0.nat_ip}"
     bastion_user = "gcp-user"
