@@ -62,7 +62,7 @@
     ],
     "Cloud":[
         {
-        "name":"Default-Cloud",
+        "name":"AWS-TerraformDemo",
         "tenant_ref":"admin",
         "vtype":"CLOUD_AWS",
         "enable_vip_static_routes":false,
@@ -114,8 +114,7 @@
     "Pool": [
         {
             "tenant_ref": "/api/tenant/?name=admin", 
-            "cloud_ref": "/api/cloud/?tenant=admin&name=Default-Cloud", 
-            "vrf_ref": "/api/vrfcontext/?tenant=admin&name=global&cloud=Default-Cloud", 
+            "cloud_ref": "/api/cloud/?tenant=admin&name=AWS-TerraformDemo", 
             "inline_health_monitor": true, 
             "default_server_port": 80, 
             "name": "Web-FrontEnd-pool", 
@@ -133,7 +132,7 @@
         "name":"Web-FrontEnd",
         "tenant_ref": "/api/tenant/?name=admin",
         "application_profile_ref": "/api/applicationprofile/?tenant=admin&name=System-HTTP", 
-        "cloud_ref": "/api/cloud/?tenant=admin&name=Default-Cloud", 
+        "cloud_ref": "/api/cloud/?tenant=admin&name=AWS-TerraformDemo", 
         "enable_autogw": true, 
         "enabled": true, 
         "cloud_type": "CLOUD_AWS",
@@ -156,7 +155,7 @@
             "network_ref": "/api/network/${mgmt_subnet_uuid}",
             "subnet_uuid": "${mgmt_subnet_uuid}"
     }],
-        "pool_ref": "/api/pool/?tenant=admin&name=Web-FrontEnd-pool&cloud=Default-Cloud" 
+        "pool_ref": "/api/pool/?tenant=admin&name=Web-FrontEnd-pool&cloud=AWS-TerraformDemo" 
         }
     ]       
 }
