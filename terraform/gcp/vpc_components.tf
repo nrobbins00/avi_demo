@@ -1,11 +1,11 @@
 #build VPC
-resource "google_compute_network" "gcp-tf-demo" {
-    name = "gcp-tf-demo"
+resource "google_compute_network" "gcp-tf-demo-vpc" {
+    name = "${var.env_name}"
     auto_create_subnetworks = false 
 }
 
 resource "google_compute_subnetwork" "gcp-tf-demo-net" {
-    name = "gcp-tf-demo-net"
+    name = "${var.env_name}-net"
     ip_cidr_range = "10.155.0.0/16"
     region = "${var.region}"
     network = "${google_compute_network.gcp-tf-demo.self_link}"
@@ -70,18 +70,19 @@ resource "google_compute_firewall" "webserver_in" {
 }
 
 
-resource "google_compute_router" "avi-tf-demo-router" {
-  name    = "avi-tf-demo-cloudrouter"
-  region  = "${google_compute_subnetwork.gcp-tf-demo-net.region}"
-  network = "${google_compute_network.gcp-tf-demo.self_link}"
+# Cloud router for non-public-ip instances to use for nat
+resource "google_compute_router" "gcp-tf-demo-router" {
+    name    = "${var.env_name}-cloudrouter"
+    region  = "${google_compute_subnetwork.gcp-tf-demo-net.region}"
+    network = "${google_compute_network.gcp-tf-demo.self_link}"
 }
 
 resource "google_compute_router_nat" "tf-demo-nat" {
-  name                               = "tf-demo-nat"
-  router                             = "${google_compute_router.avi-tf-demo-router.name}"
-  region                             = "${google_compute_subnetwork.gcp-tf-demo-net.region}"
-  nat_ip_allocate_option             = "AUTO_ONLY"
-  source_subnetwork_ip_ranges_to_nat = "ALL_SUBNETWORKS_ALL_IP_RANGES"
+    name                               = "tf-demo-nat"
+    router                             = "${google_compute_router.gcp-tf-demo-router.name}"
+    region                             = "${google_compute_subnetwork.gcp-tf-demo-net.region}"
+    nat_ip_allocate_option             = "AUTO_ONLY"
+    source_subnetwork_ip_ranges_to_nat = "ALL_SUBNETWORKS_ALL_IP_RANGES"
 }
 
 

@@ -79,6 +79,7 @@ resource "google_compute_instance" "avi_controller" {
         content = "${data.template_file.cleanup_script.rendered}"
         destination = "/tmp/cleanup.sh"
     }
+    #run build controller script and place controller config file
     provisioner "remote-exec" {
         inline = [
         "sudo mkdir -p /opt/avi/controller/data/",
@@ -89,7 +90,7 @@ resource "google_compute_instance" "avi_controller" {
         ]
     }
 
-    #destroy-time provisioner to clean up Avi cloud orchestration artifacts
+    #destroy-time provisioner to clean up Avi cloud orchestration artifacts (routes in GCP)
     provisioner "remote-exec" {
         when = "destroy"
         inline = [

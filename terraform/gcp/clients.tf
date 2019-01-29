@@ -25,7 +25,6 @@ resource "google_compute_instance" "client" {
         }
     }
 
-
     network_interface {
         subnetwork       = "${google_compute_subnetwork.gcp-tf-demo-net.self_link}"
     }
@@ -34,18 +33,19 @@ resource "google_compute_instance" "client" {
         "ssh-keys" = "${var.gcp_ssh_user}:${file(var.gcp_ssh_pub_key_file)}"
     }
 
-    #place cleanup script on build into /tmp
+    #place locust test definition file
     provisioner "file" {
         source = "locustfile.py"
         destination = "/tmp/locustfile.py"
     }
 
+    #place build client script
     provisioner "file" {
         content = "${data.template_file.build_client.rendered}"
         destination = "/tmp/build_client.sh"
     }
 
-
+    #run build client script
     provisioner "remote-exec" {
         inline = [
             "bash /tmp/build_client.sh"

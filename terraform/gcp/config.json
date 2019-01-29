@@ -3229,7 +3229,7 @@
                     "project": "majestic-option-159722", 
                     "subnet": "10.155.0.4/16", 
                     "hostname": "tf-demo-avi-se-0.c.majestic-option-159722.internal", 
-                    "network": "https://www.googleapis.com/compute/v1/projects/462512436962/global/networks/gcp-tf-demo", 
+                    "network": "https://www.googleapis.com/compute/v1/projects/462512436962/global/networks/${var.env_name}", 
                     "zone": "us-central1-c"
                 }, 
                 "url": "/api/serviceenginedbextension/", 
@@ -3305,7 +3305,7 @@
                     "project": "majestic-option-159722", 
                     "subnet": "10.155.0.2/16", 
                     "hostname": "tf-demo-avi-se-1.c.majestic-option-159722.internal", 
-                    "network": "https://www.googleapis.com/compute/v1/projects/462512436962/global/networks/gcp-tf-demo", 
+                    "network": "https://www.googleapis.com/compute/v1/projects/462512436962/global/networks/${var.env_name}", 
                     "zone": "us-central1-c"
                 }, 
                 "url": "/api/serviceenginedbextension/", 
