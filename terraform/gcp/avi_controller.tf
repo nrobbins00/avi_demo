@@ -7,7 +7,8 @@ resource "tls_private_key" "avi_ssh_key" {
 resource "google_compute_instance" "avi_controller" {
     depends_on  = [
                     "google_compute_instance.avi_se",
-                    "google_compute_instance.webservers"
+                    "google_compute_instance.webservers",
+                    "google_compute_firewall.ssh_in"
                 ]
     connection {
     host = "${self.network_interface.0.access_config.0.nat_ip}"

@@ -1,5 +1,5 @@
 #!/bin/bash
-#set -x
+set -x
 sudo yum install -y epel
 sudo yum groupinstall -y 'Development Tools'
 sudo yum install -y perl-JSON-PP
@@ -15,13 +15,12 @@ until `curl -s -k -u '${avi_username}:${avi_password}' https://${avi_ip}/api/vir
     done     
 echo "VS ready, proceed"
 echo "checking existence of floating on VIP"
-VIP_IP=`curl -s -k -u 'admin:C0mplexP@ssw0rd         # replace with 'examplePass' instead' https://${avi_ip}/api/virtualservice/?name=Web-FrontEnd | json_pp | grep -A3 floating | grep addr | awk -F ':' '{print $2}' | sed 's/"//g' | sed 's/,//g' | awk '{$1=$1};1'`
-while [ -z "$$VIP_IP" ]; do
+VIP_IP=`curl -s -k -u 'admin:C0mplexP@ssw0rd         # replace with 'examplePass' instead' https://${avi_ip}/api/virtualservice/?name=Web-FrontEnd | json_pp | grep -A3 ip_address | grep addr | awk -F ':' '{print $2}' | sed 's/"//g' | sed 's/,//g' | awk '{$1=$1};1'`
+while [[ -z $VIP_IP ]]; do
 	sleep 15s
-	VIP_IP=`curl -s -k -u 'admin:C0mplexP@ssw0rd         # replace with 'examplePass' instead' https://${avi_ip}/api/virtualservice/?name=Web-FrontEnd | json_pp | grep -A3 floating | grep addr | awk -F ':' '{print $2}' | sed 's/"//g' | sed 's/,//g' | awk '{$1=$1};1'`
+    VIP_IP=`curl -s -k -u 'admin:C0mplexP@ssw0rd         # replace with 'examplePass' instead' https://${avi_ip}/api/virtualservice/?name=Web-FrontEnd | json_pp | grep -A3 ip_address | grep addr | awk -F ':' '{print $2}' | sed 's/"//g' | sed 's/,//g' | awk '{$1=$1};1'`
 	done
-echo "testing against $${VIP_IP}"
-VIP_IP=`curl -s -k -u 'admin:C0mplexP@ssw0rd         # replace with 'examplePass' instead' https://${avi_ip}/api/virtualservice/?name=Web-FrontEnd | json_pp | grep -A3 floating | grep addr | awk -F ':' '{print $2}' | sed 's/"//g' | sed 's/,//g' | awk '{$1=$1};1'`
+VIP_IP=`curl -s -k -u 'admin:C0mplexP@ssw0rd         # replace with 'examplePass' instead' https://${avi_ip}/api/virtualservice/?name=Web-FrontEnd | json_pp | grep -A3 ip_address | grep addr | awk -F ':' '{print $2}' | sed 's/"//g' | sed 's/,//g' | awk '{$1=$1};1'`
 echo "testing against $${VIP_IP}"
 nohup /usr/bin/locust -f /tmp/locustfile.py --no-web -c 100 -r 25 -t 30m -H http://$${VIP_IP} --logfile=/tmp/locustlogs.txt &
 sleep 15s

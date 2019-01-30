@@ -2,7 +2,7 @@
 echo "running yum update"
 yum -y update
 echo "install epel,nginx"
-yum install -y epel-release yum-utils
+yum install -y epel-release yum-utils perl-JSON-PP
 yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
 "install docker"
 yum install -y docker-ce
