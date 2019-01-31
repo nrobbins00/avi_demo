@@ -11,7 +11,7 @@ data "null_data_source" "asg-tags" {
 
 #ASG launch config
 resource "aws_launch_configuration" "asg-launch-config" {
-  name = "avi-tf-demo-launchcfg"
+  name = "${var.env_name}-launchcfg"
   image_id = "${data.aws_ami.amzn_linux2.id}"
   key_name = "${var.aws_ssh_key}"
   instance_type = "t2.micro"
@@ -24,7 +24,7 @@ delete_on_termination = true
 
 #ASG for webservers
 resource "aws_autoscaling_group" "tf-demo-asg" {
-  name                      = "avi-tf-demo-asg"
+  name                      = "${var.env_name}-asg"
   max_size                  = 5
   min_size                  = 2
   health_check_grace_period = 300

@@ -6,29 +6,29 @@ if `curl -s -k -u '${avi_username}:${avi_password}' https://localhost/api/system
 
     #delete VS
     echo "Deleting virtual services"
-    for i in `curl -s -k -u '${avi_username}:${avi_password}' https://localhost/api/virtualservice/ | json_pp | grep -i \"uuid\" | awk -F ':' '{print $2}' | sed 's/"//g' | sed 's/,//g'`; do
+    for i in `curl -s -k -u '${avi_username}:${avi_password}' https://localhost/api/virtualservice/ | jq -r '.results[].uuid'`; do
     curl -X DELETE -k -u '${avi_username}:${avi_password}' https://localhost/api/virtualservice/$i
     done
 
     #delete pools
     echo "Deleting pools"
-    for i in `curl -s -k -u '${avi_username}:${avi_password}' https://localhost/api/pool/ | json_pp | grep -i \"uuid\" | awk -F ':' '{print $2}' | sed 's/"//g' | sed 's/,//g'`; do
+    for i in `curl -s -k -u '${avi_username}:${avi_password}' https://localhost/api/pool/ | jq -r '.results[].uuid'`; do
     curl -X DELETE -k -u '${avi_username}:${avi_password}' https://localhost/api/pool/$i
     done
 
     #delete SEs
     echo "Deleting service engines"
-    for i in `curl -s -k -u '${avi_username}:${avi_password}' https://localhost/api/serviceengine/ | json_pp | grep -i \"uuid\" | awk -F ':' '{print $2}' | sed 's/"//g' | sed 's/,//g'`; do
+    for i in `curl -s -k -u '${avi_username}:${avi_password}' https://localhost/api/serviceengine/ | jq -r '.results[].uuid'`; do
     curl -X DELETE -k -u '${avi_username}:${avi_password}' https://localhost/api/serviceengine/$i
     done
 
-    ##sleep while SE cleanup happens
-    #echo "Sleeping for SE cleanup"
-    #sleep 4m
+    #sleep while SE cleanup happens
+    echo "Sleeping for SE cleanup"
+    sleep 2m
 
     #set cloud to no access
     echo "Deleting cloud"
-    for i in `curl -s -k -u '${avi_username}:${avi_password}' https://localhost/api/cloud/?name=AWS-TerraformDemo | json_pp | grep -i \"uuid\" | awk -F ':' '{print $2}' | sed 's/"//g' | sed 's/,//g'`; do
+    for i in `curl -s -k -u '${avi_username}:${avi_password}' https://localhost/api/cloud/?name=AWS-TerraformDemo | jq -r '.results[].uuid'`; do
     curl -X DELETE -k -u '${avi_username}:${avi_password}' https://localhost/api/cloud/$i
     done
 

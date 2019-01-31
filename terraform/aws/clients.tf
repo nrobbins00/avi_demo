@@ -10,16 +10,15 @@ resource "aws_instance" "client" {
     private_key = "${file("${var.sshkeyfile}")}"
     # The connection will use the local SSH agent for authentication.
     }
-    ami = "${data.aws_ami.amzn_linux2_arm.id}"
-    instance_type = "a1.large"
+    ami = "${data.aws_ami.amzn_linux2.id}"
+    instance_type = "t3.large"
     key_name = "${var.aws_ssh_key}"
     subnet_id = "${aws_subnet.private.id}"
     vpc_security_group_ids = ["${aws_security_group.default.id}"]
     tags =  "${merge(var.common_tags, map(
-        "Name", "Locust host"
+        "Name", "${var.env_name} Locust host"
     ))}"
 
-    #place cleanup script on build into /tmp
     provisioner "file" {
         source = "locustfile.py"
         destination = "/tmp/locustfile.py"

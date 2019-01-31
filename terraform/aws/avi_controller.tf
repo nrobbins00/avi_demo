@@ -1,7 +1,7 @@
 
 #controller security group
 resource "aws_security_group" "avi_controller" {
-    name        = "Avi controller security group"
+    name        = "${var.env_name} controller security group"
     description = "Used in the terraform"
     vpc_id      = "${aws_vpc.aws-tf-demo.id}"
 
@@ -52,7 +52,7 @@ resource "aws_security_group" "avi_controller" {
 
 
 resource "aws_iam_instance_profile" "controller_instance_profile" {
-    name = "AviTFDemo-CtrlrRole"
+    name = "${var.env_name}-CtrlrRole"
     role = "${aws_iam_role.avi_controller_role.name}"
     }
 
@@ -83,7 +83,7 @@ VMEOF
 
 
 resource "aws_iam_role" "avi_controller_role" {
-    name = "AviTFDemo-CtrlrRole"
+    name = "${var.env_name}-CtrlrRole"
 #don't try to make heredoc pretty, or it'll fail on "JSON can't have leading spaces"
     assume_role_policy =<<EOF
 { 
@@ -411,6 +411,6 @@ resource "aws_instance" "avi_controller" {
 
 
     tags =  "${merge(var.common_tags, map(
-        "Name", "tf-demo-controller"
+        "Name", "${var.env_name}-controller"
     ))}"
 }

@@ -2,7 +2,7 @@
 resource "aws_vpc" "aws-tf-demo" {
     cidr_block = "10.0.0.0/16"
     tags =  "${merge(var.common_tags, map(
-        "Name", "AWS-Terraform-demo"
+        "Name", "${var.env_name}-demo-vpc"
     ))}"    
 }
 #build internet gateway
@@ -12,7 +12,7 @@ resource "aws_internet_gateway" "default" {
 
 #build security group for web instances
 resource "aws_security_group" "default" {
-    name        = "webserver-access"
+    name        = "${var.env_name}-webserver-access"
     vpc_id      = "${aws_vpc.aws-tf-demo.id}"
 
 # SSH access from the VPC
@@ -41,7 +41,7 @@ resource "aws_security_group" "default" {
 
 #build security group for bastion host
 resource "aws_security_group" "bastion" {
-    name        = "SSH in- bastion"
+    name        = "${var.env_name}-SSH in- bastion"
     vpc_id      = "${aws_vpc.aws-tf-demo.id}"
 
 # SSH access from anywhere
@@ -65,7 +65,7 @@ resource "aws_security_group" "bastion" {
 resource "aws_route_table" "internet_access_from_private" {
     vpc_id = "${aws_vpc.aws-tf-demo.id}"
     tags =  "${merge(var.common_tags, map(
-        "Name", "Private Subnet 1a route table"
+        "Name", "${var.env_name} - Private Subnet 1a route table"
     ))}"
 }
 
@@ -80,7 +80,7 @@ resource "aws_route" "private_to_natgw" {
 resource "aws_route_table" "internet_access_from_public" {
     vpc_id = "${aws_vpc.aws-tf-demo.id}"
     tags =  "${merge(var.common_tags, map(
-        "Name", "Public Subnet 1b route table"
+        "Name", "${var.env_name} - Public Subnet 1b route table"
     ))}"
 }
 
@@ -97,7 +97,7 @@ resource "aws_subnet" "private" {
     map_public_ip_on_launch = false
     #availability_zone = "us-east-1a"
     tags =  "${merge(var.common_tags, map(
-        "Name", "TF-Demo priv-subnet"
+        "Name", "${var.env_name}priv-subnet"
     ))}"
 }
 #build public subnet
@@ -107,7 +107,7 @@ resource "aws_subnet" "public" {
     map_public_ip_on_launch = true
     #availability_zone = "us-east-1b"
     tags =  "${merge(var.common_tags, map(
-        "Name", "TF-Demo pub-subnet"
+        "Name", "${var.env_name} pub-subnet"
     ))}"
 }
 
@@ -135,7 +135,7 @@ resource "aws_nat_gateway" "nat_gw" {
     subnet_id     = "${aws_subnet.public.id}"
     depends_on = ["aws_internet_gateway.default"]
     tags =  "${merge(var.common_tags, map(
-        "Name", "TF-demo Nat Gateway"
+        "Name", "${var.env_name} Nat Gateway"
     ))}"
 }
 
@@ -153,6 +153,6 @@ resource "aws_instance" "bastion" {
     subnet_id = "${aws_subnet.public.id}"
     vpc_security_group_ids = ["${aws_security_group.bastion.id}"]
     tags =  "${merge(var.common_tags, map(
-        "Name", "Bastion Host"
+        "Name", "${var.env_name} - Bastion Host"
     ))}"
 }

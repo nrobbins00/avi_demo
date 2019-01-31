@@ -35,3 +35,7 @@ variable "common_tags" {
         Environment = "terraform-demo"
     }
 }
+#name prefix to use for instances and other cloud constructs
+variable "env_name" {
+    default = "avi-tf-demo"
+}
