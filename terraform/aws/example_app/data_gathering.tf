@@ -3,7 +3,7 @@
 data "aws_instance" "avi_controller" {
     filter {
         name   = "tag:Name"
-        values = ["tf-demo-controller"]
+        values = ["*-controller"]
     }
     filter {
         name = "tag:Environment"
@@ -35,7 +35,7 @@ data "aws_subnet" "terraform-subnets-private" {
 data "aws_vpc" "avi_vpc" {
     filter {
         name   = "tag:Name"
-        values = ["AWS-Terraform-demo"]
+        values = ["*-demo-vpc"]
     }
 }
 
