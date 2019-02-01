@@ -17,7 +17,11 @@ variable "avi_user" {
 }
 
 variable "avi_password" {
+<<<<<<< HEAD
     default = "C0mplexP@ssw0rd"
+=======
+    default = "C0mplexP@ssw0rd         # replace with 'examplePass' instead"
+>>>>>>> 8ce34904d0a07377e207576d0fd49911b7ee9a89
 }
 
 variable "create_role" {
