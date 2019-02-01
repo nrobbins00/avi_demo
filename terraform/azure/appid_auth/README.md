@@ -35,8 +35,13 @@ Azure region
 ```-var 'region=northcentralus'```  
 
 **Avi controller password**  
+<<<<<<< HEAD
 defaults to C0mplexP@ssw0rd  
 ```-var 'avi_password=C0mplexP@ssw0rd'```
+=======
+defaults to AviDemo123!!  
+```-var 'avi_password=AviDemo123!!'```
+>>>>>>> 8ce34904d0a07377e207576d0fd49911b7ee9a89
 
 **Avi controller username**  
 defaults to admin  

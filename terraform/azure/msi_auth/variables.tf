@@ -37,5 +37,9 @@ variable "avi_user" {
 
 #password for avi controller UI and shell
 variable "avi_password" {
+<<<<<<< HEAD
     default = "C0mplexP@ssw0rd"
+=======
+    default = "AviDemo123!!"
+>>>>>>> 8ce34904d0a07377e207576d0fd49911b7ee9a89
 }
