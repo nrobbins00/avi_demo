@@ -1,6 +1,6 @@
 #scaleset for webservers in Avi pool
 resource "azurerm_virtual_machine_scale_set" "avidemo_vmss" {
-    name                = "avi-tf-demo-scaleset"
+    name                = "${var.env_name}-scaleset"
     location            = "${var.region}"
     resource_group_name = "${azurerm_resource_group.avi_tf_demo_rg.name}"
     upgrade_policy_mode = "Manual"
@@ -36,7 +36,7 @@ resource "azurerm_virtual_machine_scale_set" "avidemo_vmss" {
         disable_password_authentication = true
         ssh_keys {
             path     = "/home/${var.user}/.ssh/authorized_keys"
-            key_data = "${var.sshkey}"
+            key_data = "${file("${var.ssh_pub_key_file}")}"
         }
     }
 
@@ -46,17 +46,17 @@ resource "azurerm_virtual_machine_scale_set" "avidemo_vmss" {
     }
 
     network_profile {
-        name    = "avi-tf-demo-netprofile"
+        name    = "${var.env_name}-netprofile"
         primary = true
         ip_configuration {
-            name                                   = "avi-tf-demo-ipconfig"
+            name                                   = "${var.env_name}-ipconfig"
             subnet_id                              = "${azurerm_subnet.avidemo-subnet-1.id}"
             primary = true
         }
     }
-    tags {
-        environment = "Terraform Demo"
-    }
+    tags =  "${merge(var.common_tags, map(
+        "Name", "${var.env_name}-client"
+    ))}"
 }
 
 

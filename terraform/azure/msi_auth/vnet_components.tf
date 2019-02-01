@@ -1,6 +1,6 @@
 #build resource group for demo, easier cleanup this way
 resource "azurerm_resource_group" "avi_tf_demo_rg" {
-name = "avi-terraform-demo"
+name = "${var.env_name}"
 location = "${var.region}"
 tags{}
 }
@@ -8,7 +8,7 @@ tags{}
 
 #build vnet
 resource "azurerm_virtual_network" "avi-tf-demo-vnet" {
-    name = "avi-tf-demo-vnet"
+    name = "${var.env_name}-vnet"
     address_space = ["10.247.0.0/16"]
     location = "${var.region}"
     resource_group_name = "${azurerm_resource_group.avi_tf_demo_rg.name}"
@@ -20,7 +20,7 @@ resource "azurerm_virtual_network" "avi-tf-demo-vnet" {
 
 #build subnet inside vnet
 resource "azurerm_subnet" "avidemo-subnet-1" {
-    name = "avidemo-subnet-1"
+    name = "${var.env_name}-subnet-1"
     resource_group_name = "${azurerm_resource_group.avi_tf_demo_rg.name}"
     virtual_network_name = "${azurerm_virtual_network.avi-tf-demo-vnet.name}"
     address_prefix = "10.247.0.0/24"
@@ -51,11 +51,12 @@ resource "azurerm_storage_account" "avidemo-tf-stgacct" {
 }
 
 #Create public IP for bastion host
-resource "azurerm_public_ip" "avi-tf-demo-pubip-1" {
-    name                         = "avi-tf-demo-pubip-1"
+resource "azurerm_public_ip" "bastion-pubip" {
+    name                         = "${var.env_name}-bastion-pubip"
     location                     = "${var.region}"
     resource_group_name          = "${azurerm_resource_group.avi_tf_demo_rg.name}"
     public_ip_address_allocation = "dynamic"
+    domain_name_label            = "${var.env_name}-bastion"
 
     tags {
         environment = "Terraform Demo"
@@ -63,8 +64,8 @@ resource "azurerm_public_ip" "avi-tf-demo-pubip-1" {
 }
 
 #Build network security group for bastion host
-resource "azurerm_network_security_group" "avi-tf-demo-bastion-nsg" {
-    name                = "avi-tf-demo-bastion-nsg"
+resource "azurerm_network_security_group" "bastion-nsg" {
+    name                = "${var.env_name}-bastion-nsg"
     location                     = "${var.region}"
     resource_group_name          = "${azurerm_resource_group.avi_tf_demo_rg.name}"
     security_rule {
@@ -86,16 +87,16 @@ resource "azurerm_network_security_group" "avi-tf-demo-bastion-nsg" {
 
 #Build network interface for bastion host
 resource "azurerm_network_interface" "avi-tf-demo-bastion" {
-    name                = "avi-tf-bastion-nic"
+    name                = "${var.env_name}-bastion-nic"
     location                     = "${var.region}"
     resource_group_name          = "${azurerm_resource_group.avi_tf_demo_rg.name}"
-    network_security_group_id = "${azurerm_network_security_group.avi-tf-demo-bastion-nsg.id}"
+    network_security_group_id = "${azurerm_network_security_group.bastion-nsg.id}"
 
     ip_configuration {
         name                          = "avi-tf-bastion-nic-attach"
         subnet_id                     = "${azurerm_subnet.avidemo-subnet-1.id}"
         private_ip_address_allocation = "dynamic"
-        public_ip_address_id          = "${azurerm_public_ip.avi-tf-demo-pubip-1.id}"
+        public_ip_address_id          = "${azurerm_public_ip.bastion-pubip.id}"
     }
 
     tags {
@@ -105,7 +106,7 @@ resource "azurerm_network_interface" "avi-tf-demo-bastion" {
 
 #build bastion host
 resource "azurerm_virtual_machine" "bastion" {
-    name                  = "avi-tf-bastion"
+    name                  = "${var.env_name}-bastion"
     location                     = "${var.region}"
     resource_group_name          = "${azurerm_resource_group.avi_tf_demo_rg.name}"
     network_interface_ids = ["${azurerm_network_interface.avi-tf-demo-bastion.id}"]
@@ -113,7 +114,7 @@ resource "azurerm_virtual_machine" "bastion" {
     delete_os_disk_on_termination = true
 
     storage_os_disk {
-        name              = "avi-tf-bastion-osdisk"
+        name              = "bastion-osdisk"
         caching           = "ReadWrite"
         create_option     = "FromImage"
         managed_disk_type = "StandardSSD_LRS"
@@ -136,7 +137,7 @@ resource "azurerm_virtual_machine" "bastion" {
         disable_password_authentication = true
         ssh_keys {
             path     = "/home/${var.user}/.ssh/authorized_keys"
-            key_data = "${var.sshkey}"
+            key_data = "${file("${var.ssh_pub_key_file}")}"
         }
     }
 
@@ -153,7 +154,7 @@ resource "azurerm_virtual_machine" "bastion" {
 
 #Data source for reliable public IP address output
 data "azurerm_public_ip" "bastion_pubip" { 
-    name = "${azurerm_public_ip.avi-tf-demo-pubip-1.name}" 
+    name = "${azurerm_public_ip.bastion-pubip.name}" 
     resource_group_name  = "${azurerm_resource_group.avi_tf_demo_rg.name}"
     depends_on = ["azurerm_virtual_machine.bastion"]
 }

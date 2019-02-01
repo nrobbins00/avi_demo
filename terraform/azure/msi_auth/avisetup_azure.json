@@ -30,7 +30,8 @@
         "portal_configuration":{
             "redirect_to_https":true,
             "enable_https":true,
-            "enable_http":true
+            "enable_http":true,
+            "allow_basic_authentication":true
         },
         "ntp_configuration":{
             "ntp_server_list":[
@@ -57,7 +58,7 @@
     ],
     "Cloud":[
         {
-        "name":"Default-Cloud",
+        "name":"Azure-TerraformDemo",
         "tenant_ref":"admin",
         "vtype":"CLOUD_AZURE",
         "enable_vip_static_routes":false,
@@ -109,11 +110,10 @@
     "Pool": [
         {
             "tenant_ref": "/api/tenant/?name=admin", 
-            "cloud_ref": "/api/cloud/?tenant=admin&name=Default-Cloud", 
-            "vrf_ref": "/api/vrfcontext/?tenant=admin&name=global&cloud=Default-Cloud", 
+            "cloud_ref": "/api/cloud/?tenant=admin&name=Azure-TerraformDemo", 
             "inline_health_monitor": true, 
             "default_server_port": 80, 
-            "name": "testymctesterson-pool", 
+            "name": "Web-FrontEnd-pool", 
             "enabled": true, 
             "external_autoscale_groups": [
                 "${ss_name}@${resource_group}"
@@ -128,7 +128,7 @@
         "name":"Web-FrontEnd",
         "tenant_ref": "/api/tenant/?name=admin",
         "application_profile_ref": "/api/applicationprofile/?tenant=admin&name=System-HTTP", 
-        "cloud_ref": "/api/cloud/?tenant=admin&name=Default-Cloud", 
+        "cloud_ref": "/api/cloud/?tenant=admin&name=Azure-TerraformDemo", 
         "enable_autogw": true, 
         "enabled": true, 
         "cloud_type": "CLOUD_AZURE",
@@ -151,7 +151,7 @@
             "network_ref": "/api/network/${se_subnet_name}#${se_subnet_name}",
             "subnet_uuid": "${se_subnet_name}"
     }],
-        "pool_ref": "/api/pool/?tenant=admin&name=testymctesterson-pool&cloud=Default-Cloud" 
+        "pool_ref": "/api/pool/?tenant=admin&name=Web-FrontEnd-pool&cloud=Azure-TerraformDemo" 
         }
     ]
 }

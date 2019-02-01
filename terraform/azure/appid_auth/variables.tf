@@ -5,25 +5,37 @@ variable "region" {
 
 variable "user" {
     #User for created linux instances
-    #default = "admin_user"
+    #default = "user"
 }
+variable "ssh_pub_key_file" {}
 
-variable "sshkey" {
-    #SSH public key used to log into bastion host and linux instances
-    #default = "ssh-rsa AAAAB3NzaC1yc2E....example....km9vWQ1seAbZZ"
-}
-
-variable "azure_password" {
-    #Password for Azure account, needed for controller configuration template
-    #default = "password"
-}
-
-variable "azure_user" {
-    #Username for Azure account, needed for controller configuration template
-    #default = "azure_user"
+variable "ssh_priv_key_file" {
+#used for connecting to instances after deployment for provisioners
 }
 
 variable "sub_id" {
     #Azure account subscription ID
     #default = "XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX"
+}
+
+variable "common_tags" {
+    type = "map"
+    default = {
+        Owner   = "A Terraform User"
+        Environment = "terraform-demo"
+    }
+}
+
+variable "env_name" {
+    default = "avi-tf-demo"
+}
+
+#username for avi controller UI and shell
+variable "avi_user" {
+    default = "admin"
+}
+
+#password for avi controller UI and shell
+variable "avi_password" {
+    default = "C0mplexP@ssw0rd         # replace with 'examplePass' instead"
 }

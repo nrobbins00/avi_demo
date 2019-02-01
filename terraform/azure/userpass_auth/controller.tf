@@ -1,9 +1,10 @@
 #Create Avi controller public IP
-resource "azurerm_public_ip" "avi-tf-demo-pubip2" {
-    name                         = "avi-tf-demo-pubip2"
+resource "azurerm_public_ip" "ctrlr-pubip" {
+    name                         = "${var.env_name}-ctrlr-pubip"
     location                     = "${var.region}"
     resource_group_name          = "${azurerm_resource_group.avi_tf_demo_rg.name}"
     public_ip_address_allocation = "dynamic"
+    domain_name_label            = "${var.env_name}-ctrlr"
 
     tags {
         environment = "Terraform Demo"
@@ -11,8 +12,8 @@ resource "azurerm_public_ip" "avi-tf-demo-pubip2" {
 }
 
 #Create Avi controller network security group
-resource "azurerm_network_security_group" "avi-tf-demo-ctrlr-nsg" {
-    name                = "avi-tf-demo-ctrlr-nsg"
+resource "azurerm_network_security_group" "ctrlr-nsg" {
+    name                = "${var.env_name}-ctrlr-nsg"
     location                     = "${var.region}"
     resource_group_name          = "${azurerm_resource_group.avi_tf_demo_rg.name}"
     security_rule {
@@ -44,17 +45,17 @@ resource "azurerm_network_security_group" "avi-tf-demo-ctrlr-nsg" {
 }
 
 #Create Avi controller network interface
-resource "azurerm_network_interface" "avi-tf-demo-ctrlr-nic" {
-    name                = "avi-tf-ctrlr-nic"
+resource "azurerm_network_interface" "ctrlr-nic" {
+    name                = "${var.env_name}-ctrlr-nic"
     location                     = "${var.region}"
     resource_group_name          = "${azurerm_resource_group.avi_tf_demo_rg.name}"
-    network_security_group_id = "${azurerm_network_security_group.avi-tf-demo-ctrlr-nsg.id}"
+    network_security_group_id = "${azurerm_network_security_group.ctrlr-nsg.id}"
 
     ip_configuration {
-        name                          = "avi-tf-ctrlr-nic-attach"
+        name                          = "${var.env_name}-ctrlr-nic-attach"
         subnet_id                     = "${azurerm_subnet.avidemo-subnet-1.id}"
         private_ip_address_allocation = "dynamic"
-        public_ip_address_id          = "${azurerm_public_ip.avi-tf-demo-pubip2.id}"
+        public_ip_address_id          = "${azurerm_public_ip.ctrlr-pubip.id}"
     }
 
     tags {
@@ -64,16 +65,25 @@ resource "azurerm_network_interface" "avi-tf-demo-ctrlr-nic" {
 
 #build controller virtual machine
 resource "azurerm_virtual_machine" "avi-tf-demo-controller" {
-    name                  = "avi-tf-demo-controller"
+    depends_on = [
+                    "azurerm_network_interface.ctrlr-nic",
+                    "azurerm_public_ip.ctrlr-pubip"
+    ]
+    connection {
+    user = "${var.avi_user}"
+    password = "${var.avi_password}"
+    host = "${azurerm_public_ip.ctrlr-pubip.fqdn}"
+    }
+    name                  = "${var.env_name}-controller"
     location                     = "${var.region}"
     resource_group_name          = "${azurerm_resource_group.avi_tf_demo_rg.name}"
-    network_interface_ids = ["${azurerm_network_interface.avi-tf-demo-ctrlr-nic.id}"]
+    network_interface_ids = ["${azurerm_network_interface.ctrlr-nic.id}"]
     vm_size               = "Standard_F8s"
     #vm_size               = "Standard_F4s_v2"
     delete_os_disk_on_termination = true
 
     storage_os_disk {
-        name              = "avi-tf-ctrlr-osdisk"
+        name              = "${var.env_name}-ctrlr-osdisk"
         caching           = "ReadWrite"
         create_option     = "FromImage"
         managed_disk_type = "StandardSSD_LRS"
@@ -101,7 +111,7 @@ resource "azurerm_virtual_machine" "avi-tf-demo-controller" {
         disable_password_authentication = true
         ssh_keys {
             path     = "/home/${var.user}/.ssh/authorized_keys"
-            key_data = "${var.sshkey}"
+            key_data = "${file(var.ssh_pub_key_file)}"
         }
     }
 
@@ -113,12 +123,27 @@ resource "azurerm_virtual_machine" "avi-tf-demo-controller" {
     tags {
         environment = "Terraform Demo"
     }
+
+    provisioner "file" {
+        when = "destroy"
+        content = "${data.template_file.cleanup_script.rendered}"
+        destination = "/tmp/cleanup.sh"
+    }
+
+    #destroy-time provisioner to clean up Avi cloud orchestration artifacts (routes in GCP)
+    provisioner "remote-exec" {
+        when = "destroy"
+        inline = [
+            "bash /tmp/cleanup.sh"
+        ]
+    }
+
 }
 
 
 #data source to reliably output controller public IP
 data "azurerm_public_ip" "controller_pubip" { 
-    name = "${azurerm_public_ip.avi-tf-demo-pubip2.name}" 
+    name = "${azurerm_public_ip.ctrlr-pubip.name}" 
     resource_group_name  = "${azurerm_resource_group.avi_tf_demo_rg.name}"
     depends_on = ["azurerm_virtual_machine.avi-tf-demo-controller"]
 }

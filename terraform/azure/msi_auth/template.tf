@@ -15,3 +15,25 @@ data "template_file" "controller_configuration" {
         ss_name = "${azurerm_virtual_machine_scale_set.avidemo_vmss.name}"
     }
 }
+
+data "template_file" "build_client" {
+    template = "${file("${path.module}/build_client.sh")}"
+
+    vars {
+        avi_username = "${var.avi_user}"
+        avi_password = "${var.avi_password}"
+        avi_ip = "${azurerm_network_interface.ctrlr-nic.private_ip_address}"
+    }
+        
+}
+
+#Template for script to clean up AWS after cloud orchestration has happened
+data "template_file" "cleanup_script" {
+    template = "${file("${path.module}/cleanup.sh")}"
+
+    vars {
+        avi_username = "${var.avi_user}"
+        avi_password = "${var.avi_password}"
+        ctrlr_ip = "${azurerm_network_interface.ctrlr-nic.private_ip_address}"
+    }
+} 
