@@ -113,11 +113,7 @@
             "is_superuser": true,
             "full_name": "System Administrator",
             "uid": 2000,
-<<<<<<< HEAD
             "password": "${avi_password}",
-=======
-            "password": "AviDemo123!!",
->>>>>>> 8ce34904d0a07377e207576d0fd49911b7ee9a89
             "local": true,
             "email": "",
             "default_tenant_ref": "/api/tenant/?name=admin"

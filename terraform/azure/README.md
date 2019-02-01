@@ -16,11 +16,7 @@ There are 3 different demos, corresponding to the different supported Azure auth
 
 Each example has a corresponding README with instructions about required and optional arguments.
 
-<<<<<<< HEAD
 The demo assumes no DNS is configured within Azure, so when the Terraform run is complete, the public IP address of the bastion host and the Avi Vantage controller will be displayed.  You can access the Avi Vantage controller using https in a browser, using the username ```admin``` and the password ```C0mplexP@ssw0rd```
-=======
-The demo assumes no DNS is configured within Azure, so when the Terraform run is complete, the public IP address of the bastion host and the Avi Vantage controller will be displayed.  You can access the Avi Vantage controller using https in a browser, using the username ```admin``` and the password ```AviDemo123!!```
->>>>>>> 8ce34904d0a07377e207576d0fd49911b7ee9a89
 
 ### Cleaning up  
 ```terraform destroy```
