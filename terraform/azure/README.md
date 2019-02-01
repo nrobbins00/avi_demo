@@ -17,8 +17,9 @@ There are 3 different demos, corresponding to the different supported Azure auth
 Each example has a corresponding README with instructions about required and optional arguments.
 
 The demo assumes no DNS is configured within Azure, so when the Terraform run is complete, the public IP address of the bastion host and the Avi Vantage controller will be displayed.  You can access the Avi Vantage controller using https in a browser, using the username ```admin``` and the password ```C0mplexP@ssw0rd         # replace with 'examplePass' instead```
-### Cleaning up  
 
-Terraform will fail on cleanup because of the Avi Controller-created VMs.  For easy cleanup, use Azure CLI.  
-```az group delete --name avi-terraform-demo --no-wait```  
- Then a final ```terraform destroy``` to clean up state
+### Cleaning up  
+```terraform destroy```
+
+
+The cleanup takes a long time and sometimes cleanup will fail because of https://github.com/hashicorp/go-azure-helpers/issues/22 .  If this happens, a rerun of ```terraform destroy``` should clean the rest up.
