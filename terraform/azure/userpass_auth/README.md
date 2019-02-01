@@ -34,8 +34,8 @@ Azure region
 ```-var 'region=northcentralus'```  
 
 **Avi controller password**  
-defaults to C0mplexP@ssw0rd         # replace with 'examplePass' instead  
-```-var 'avi_password=C0mplexP@ssw0rd         # replace with 'examplePass' instead'```
+defaults to C0mplexP@ssw0rd  
+```-var 'avi_password=C0mplexP@ssw0rd'```
 
 **Avi controller username**  
 defaults to admin  

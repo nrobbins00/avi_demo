@@ -39,7 +39,7 @@ variable "avi_user" {
 
 #password for avi controller UI and shell
 variable "avi_password" {
-    default = "C0mplexP@ssw0rd         # replace with 'examplePass' instead"
+    default = "C0mplexP@ssw0rd"
 }
 
 variable "common_tags" {

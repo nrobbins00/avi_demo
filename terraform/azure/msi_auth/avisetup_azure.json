@@ -101,7 +101,7 @@
             "is_superuser": true,
             "full_name": "System Administrator",
             "uid": 2000,
-            "password": "C0mplexP@ssw0rd         # replace with 'examplePass' instead",
+            "password": "${avi_password}",
             "local": true,
             "email": "",
             "default_tenant_ref": "/api/tenant/?name=admin"

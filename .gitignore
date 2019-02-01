@@ -10,3 +10,6 @@
 
 # Mac stuff
 .DS_Store
+
+# bfg replacements
+replacements.txt
