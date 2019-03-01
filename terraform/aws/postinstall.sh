@@ -1,14 +1,10 @@
 #!/bin/bash
 echo "running yum update"
 yum -y update
-echo "install epel,nginx"
-amazon-linux-extras install -y epel nginx1.12
-echo "install svn"
-yum install -y svn
-echo "configure and start nginx"
-svn checkout https://github.com/avinetworks/demo-in-a-box/trunk/servers/demo-scaleout/html /usr/share/nginx/html/
-rm -rf /usr/share/nginx/html/index.html
-mv /usr/share/nginx/html/index.htm /usr/share/nginx/html/index.html
-systemctl enable nginx
-systemctl start nginx
+echo "install epel,docker"
+amazon-linux-extras install -y epel
+yum install -y docker
+echo "start docker and run container"
+systemctl start docker
+docker run -itd -p 80:80 nrobbins/demoimages:demoserverv1
 exit 0
