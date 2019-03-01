@@ -13,7 +13,7 @@ while [[ -z $VIP_IP ]]; do
 	done
 VIP_IP=`curl -s -k -u '${avi_user}:${avi_password}' https://${avi_ip}/api/virtualservice/?name=Web-FrontEnd | jq -r '.results[].ip_address.addr' 2> /dev/null`
 echo "testing against $${VIP_IP}"
-sudo docker run -itd -e DEMOURL=$${VIP_IP} --net=host --privileged nrobbins/demoimages:clientv1
+sudo docker run -itd -e DEMOURL=$${VIP_IP} -e SPOOFIP=true --net=host --privileged nrobbins/demoimages:clientv1
 sleep 15s
 echo "test running"
 exit 0
