@@ -18,6 +18,7 @@ resource "google_compute_instance" "client" {
     
     name         = "tf-demo-avi-client-${count.index}"
     machine_type = "n1-standard-2"
+    can_ip_forward = true
     boot_disk {
         initialize_params {
             image = "centos-cloud/centos-7"

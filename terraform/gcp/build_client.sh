@@ -1,27 +1,19 @@
 #!/bin/bash
 #set -x
-sudo yum install -y epel-release
-sudo yum groupinstall -y 'Development Tools'
-sudo yum install -y jq
-curl https://bootstrap.pypa.io/get-pip.py -o /tmp/get-pip.py
-sudo python /tmp/get-pip.py
-sudo rm -rf /usr/lib/python2.7/site-packages/requests*
-sudo pip install locustio
+sudo yum install -y epel-release yum-utils
+sudo yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
+sudo yum install -y jq docker-ce
+sudo systemctl start docker
 #check to see if API is responding
 echo "checking existence of floating on VIP"
-VIP_IP=`curl -s -k -u '${avi_user}:${avi_password}' https://${avi_ip}/api/virtualservice/?name=Web-FrontEnd | jq -r '.results[].floating_ip.addr' 2> /dev/null`
+VIP_IP=`curl -s -k -u '${avi_user}:${avi_password}' https://${avi_ip}/api/virtualservice/?name=Web-FrontEnd | jq -r '.results[].ip_address.addr' 2> /dev/null`
 while [[ -z $VIP_IP ]]; do
 	sleep 15s
-    VIP_IP=`curl -s -k -u '${avi_user}:${avi_password}' https://${avi_ip}/api/virtualservice/?name=Web-FrontEnd | jq -r '.results[].floating_ip.addr' 2> /dev/null`
+    VIP_IP=`curl -s -k -u '${avi_user}:${avi_password}' https://${avi_ip}/api/virtualservice/?name=Web-FrontEnd | jq -r '.results[].ip_address.addr' 2> /dev/null`
 	done
-VIP_IP=`curl -s -k -u '${avi_user}:${avi_password}' https://${avi_ip}/api/virtualservice/?name=Web-FrontEnd | jq -r '.results[].floating_ip.addr' 2> /dev/null`
+VIP_IP=`curl -s -k -u '${avi_user}:${avi_password}' https://${avi_ip}/api/virtualservice/?name=Web-FrontEnd | jq -r '.results[].ip_address.addr' 2> /dev/null`
 echo "testing against $${VIP_IP}"
-nohup /usr/bin/locust -f /tmp/locustfile.py --no-web -c 100 -r 25 -t 30m -H http://$${VIP_IP} --logfile=/tmp/locustlogs.txt &
+sudo docker run -itd -e DEMOURL=$${VIP_IP} --net=host --privileged nrobbins/demoimages:clientv1
 sleep 15s
 echo "test running"
 exit 0
-
-
-
-
-

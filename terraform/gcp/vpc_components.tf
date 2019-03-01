@@ -92,6 +92,7 @@ resource "google_compute_instance" "bastion" {
     machine_type = "f1-micro"
 
 
+
     boot_disk {
         initialize_params {
         image = "centos-cloud/centos-7"
