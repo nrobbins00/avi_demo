@@ -59,6 +59,10 @@ Defaults to true, only used if deploying to a cloud that already has an Avi cont
 Defaults to US-East-1  
 ```-var 'region=us-east-1'```
 
+**Environment Name**
+Used for name uniqueness, defaults to avi-tf-demo
+```-var 'env_name=my-supercool-demo'```
+
 
 
 ### Cleaning up  

@@ -154,7 +154,7 @@ resource "azurerm_azuread_service_principal_password" "avi-tf-demo-sp-pw" {
     end_date             = "${timeadd(timestamp(), "720h")}"
 }
 
-#Assign app ID to controller VM for orchestration permissions
+#Assign app ID to resource group for orchestration permissions
 resource "azurerm_role_assignment" "contrib_to_controller" {
     scope                = "${azurerm_resource_group.avi_tf_demo_rg.id}"
     role_definition_name = "Contributor"
