@@ -7,7 +7,7 @@ data "template_file" "build_client" {
     template = "${file("${path.module}/build_client.sh")}"
 
     vars {
-        avi_username = "${var.avi_user}"
+        avi_user = "${var.avi_user}"
         avi_password = "${var.avi_password}"
         avi_ip = "${azurerm_network_interface.ctrlr-nic.private_ip_address}"
     }
