@@ -13,6 +13,7 @@ data "template_file" "controller_configuration" {
         vnet_id = "${azurerm_virtual_network.avi-tf-demo-vnet.id}"
         se_subnet_name = "${azurerm_subnet.avidemo-subnet-1.name}"
         ss_name = "${azurerm_virtual_machine_scale_set.avidemo_vmss.name}"
+        avi_password = "${var.avi_password}"        
     }
 }
 
@@ -20,7 +21,7 @@ data "template_file" "build_client" {
     template = "${file("${path.module}/build_client.sh")}"
 
     vars {
-        avi_username = "${var.avi_user}"
+        avi_user = "${var.avi_user}"
         avi_password = "${var.avi_password}"
         avi_ip = "${azurerm_network_interface.ctrlr-nic.private_ip_address}"
     }

@@ -150,11 +150,10 @@
             "/api/sslkeyandcertificate/?tenant=admin&name=System-Default-Cert-EC"
         ], 
         "analytics_policy": {
-            "udf_log_throttle": 0, 
-            "enabled": true, 
+            "udf_log_throttle": 0,
+            "all_headers": true,  
             "full_client_logs": {
-                "duration": 30, 
-                "all_headers": true, 
+                "duration": 30,
                 "throttle": 0, 
                 "enabled": true
             }, 

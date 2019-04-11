@@ -4,11 +4,11 @@
 *Used as cli arguments, inserted into variables.tf, or used with terraform.tfvars*
 
 **SSH public key file**  
-SSH public key used to log into bastion host and linux clients   
+SSH public key used to register as authorized key on bastion host and linux clients   
 ```-var 'ssh_pub_key_file=/Users/tfuser/.ssh/id_rsa.pub'```
 
-**SSH public key file**  
-SSH public key used by provisioners to run scripts   
+**SSH private key file**  
+SSH private key (in PEM format, not encrypted) used by provisioners to run scripts   
 ```-var 'ssh_pub_key_file=/Users/tfuser/.ssh/id_rsa'```
 
 **User**  
