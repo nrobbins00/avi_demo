@@ -38,7 +38,7 @@ resource "google_compute_instance" "avi_controller" {
     }
 
     metadata {
-        "ssh-keys" = "${var.gcp_ssh_user}:${file(var.gcp_ssh_pub_key_file)}${var.gcp_ssh_user}:${tls_private_key.avi_ssh_key.public_key_openssh}"
+        "ssh-keys" = "${var.gcp_ssh_user}:${file(var.gcp_ssh_pub_key_file)}"
     }
 
     #metadata_startup_script = "${data.template_file.server_prep_controller.rendered}"
