@@ -15,11 +15,11 @@ This project will create a cloud demo of the Avi Vantage platform.  This demo wi
 
 
 **SSH private key file**  
-SSH keyfile used to log Avi controller for cleanup script  
+SSH keyfile (in PEM format) used to log Avi controller for cleanup script  
 ```-var 'gcp_ssh_priv_key_file=/users/demouser/.ssh/id_rsa'```  
 
 **SSH public key file**  
-SSH keyfile inserted into authorized_hosts file of GCP instances   
+SSH keyfile (in PEM format) inserted into authorized_hosts file of GCP instances   
 ```-var 'gcp_ssh_pub_key_file=/users/demouser/.ssh/id_rsa.pub'```  
 
 **GCP Project ID**  
