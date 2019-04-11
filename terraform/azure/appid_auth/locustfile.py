@@ -6,7 +6,7 @@ from locust import HttpLocust, TaskSet, task
 class MyTaskSet(TaskSet):
     @task(1000)
     def index(self):
-        response = self.client.get("/index.html")
+        response = self.client.get("/")
 
     # This task will 15 times for every 1000 runs of the above task
     @task(15)
@@ -16,7 +16,7 @@ class MyTaskSet(TaskSet):
     # This task will run once for every 1000 runs of the above task
     @task(1)
     def filedownload(self):
-        self.client.get("/100k.dat")
+        self.client.get("/100kb.txt")
 
 class MyLocust(HttpLocust):
     host = os.getenv('TARGET_URL', "http://localhost")
