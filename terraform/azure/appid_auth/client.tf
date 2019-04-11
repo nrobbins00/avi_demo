@@ -83,18 +83,4 @@ resource "azurerm_virtual_machine" "client" {
         ]
     } 
 
-
-    provisioner "file" {
-        content = "${data.template_file.cleanup_script.rendered}"
-        destination = "/tmp/cleanup.sh"
-    }
-
-    #destroy-time provisioner to clean up Avi cloud orchestration artifacts (routes in GCP)
-    provisioner "remote-exec" {
-        when = "destroy"
-        inline = [
-            "bash /tmp/cleanup.sh"
-        ]
-    }
-
 }
