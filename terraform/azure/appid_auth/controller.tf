@@ -4,6 +4,8 @@ resource "azurerm_public_ip" "ctrlr-pubip" {
     location                     = "${var.region}"
     resource_group_name          = "${azurerm_resource_group.avi_tf_demo_rg.name}"
     public_ip_address_allocation = "dynamic"
+    domain_name_label            = "${var.env_name}-ctrlr"
+
     tags =  "${var.common_tags}"
 }
 
@@ -58,10 +60,15 @@ resource "azurerm_network_interface" "ctrlr-nic" {
 #build controller virtual machine
 resource "azurerm_virtual_machine" "avi-tf-demo-controller" {
     depends_on = [  
-                    "azurerm_azuread_service_principal.avi-tf-demo-sp",
+                    "azurerm_azuread_application.avi-tf-demo-appid",
                     "azurerm_azuread_service_principal.avi-tf-demo-sp",
                     "azurerm_azuread_service_principal_password.avi-tf-demo-sp-pw"
                 ]
+    connection {
+    user = "${var.avi_user}"
+    password = "${var.avi_password}"
+    host = "${azurerm_public_ip.ctrlr-pubip.fqdn}"
+    }
     name                  = "avi-tf-demo-controller"
     location                     = "${var.region}"
     resource_group_name          = "${azurerm_resource_group.avi_tf_demo_rg.name}"
