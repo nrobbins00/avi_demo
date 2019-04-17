@@ -162,7 +162,7 @@ resource "azurerm_azuread_service_principal_password" "avi-tf-demo-sp-pw" {
 }
 
 #Assign app ID to resource group for orchestration permissions
-resource "azurerm_role_assignment" "contrib_to_controller" {
+resource "azurerm_role_assignment" "appid_contrib_to_rsg" {
     scope                = "${azurerm_resource_group.avi_tf_demo_rg.id}"
     role_definition_name = "Contributor"
     principal_id         = "${azurerm_azuread_service_principal.avi-tf-demo-sp.id}"

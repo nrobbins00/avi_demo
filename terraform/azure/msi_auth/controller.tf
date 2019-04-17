@@ -146,7 +146,7 @@ data "azurerm_subscription" "current" {}
 
 
 #Assign contributor role to Avi controller virtual machine for cloud orchestration
-resource "azurerm_role_assignment" "avi_controller_msi" {
+resource "azurerm_role_assignment" "ctrlr_contrib_to_rsg" {
     scope              = "${azurerm_resource_group.avi_tf_demo_rg.id}"
     role_definition_name = "Contributor"
     principal_id       = "${lookup(azurerm_virtual_machine.avi-tf-demo-controller.identity[0], "principal_id")}"
